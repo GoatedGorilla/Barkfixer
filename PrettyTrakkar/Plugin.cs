@@ -14,31 +14,38 @@ namespace PrettyTrakkar
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
     {
+        // 👇 paste your webhook URL here
+        private const string WebhookUrl = "https://discord.com/api/webhooks/XXXX/YYYY";
+
         Webhook whInstance = new Webhook();
 
-        void Awake() { 
+        void Awake()
+        {
             Harmony.CreateAndPatchAll(GetType().Assembly, Info.Metadata.GUID);
             whInstance = new Webhook();
-            ReadConfig();
+            SetupWebhook();
             GorillaTagger.OnPlayerSpawned(OnPlayerSpawned);
         }
+
         void OnPlayerSpawned() => NetworkSystem.Instance.OnJoinedRoomEvent += OnJoin;
-        void ReadConfig()
+
+        void SetupWebhook()
         {
-            string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.txt");
-            if (File.Exists(configPath))
+            if (string.IsNullOrWhiteSpace(WebhookUrl) || WebhookUrl.Contains("XXXX"))
             {
-                //you well be able to change this in future updates
-                whInstance.Name = "gorilla";
-                whInstance.AvatarURL = "https://github.com/neboskriptDEV/PrettyTrakkar/blob/main/pticon.png?raw=true";
-
-                Debug.Log("[Pretty Trakkar] Reading Config Path " + configPath);
-                whInstance.Url = File.ReadAllText(configPath);
-
-                Debug.Log("[Pretty Trakkar] Got webhook config successfully!");
+                Debug.LogError("[Pretty Trakkar] No webhook URL set! Edit WebhookUrl in Plugin.cs and rebuild.");
+                return;
             }
-            else { Debug.LogError("[Pretty Trakkar] Failed to read the webhook (maybe you are missing config.txt?)"); }
+
+            whInstance.Name = "gorilla";
+            whInstance.AvatarURL = "https://github.com/neboskriptDEV/PrettyTrakkar/blob/main/pticon.png?raw=true";
+            whInstance.Url = WebhookUrl;
+
+            Debug.Log("[Pretty Trakkar] Webhook set successfully!");
         }
+
+        // ...OnJoin stays exactly the same
+    }
 
         //i feel like this code is so bad but it works please make a pr making this cleaner ill just leave it like it is right now
         void OnJoin()
