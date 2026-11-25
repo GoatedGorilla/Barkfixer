@@ -15,7 +15,7 @@ namespace PrettyTrakkar
     public class Plugin : BaseUnityPlugin
     {
         // 👇 paste your webhook URL here
-        private const string WebhookUrl = "https://discord.com/api/webhooks/XXXX/YYYY";
+        private const string WebhookUrl = "https://discord.com/api/webhooks/1574982252029411428/0ytatcGjsgEvtc4Ye9gVClFcK_JGRaAELio-U0oduK_lKmuEhOF3dXmME4_1FxEDw5_W";
 
         Webhook whInstance = new Webhook();
 
